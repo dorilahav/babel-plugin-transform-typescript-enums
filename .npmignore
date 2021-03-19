@@ -3,3 +3,4 @@ yarn.lock
 .babelrc
 src
 __test__
+.github
