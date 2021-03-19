@@ -15,6 +15,9 @@
     "enums",
     "babel"
   ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
