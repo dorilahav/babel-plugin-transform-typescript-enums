@@ -1,4 +1,5 @@
 # babel-plugin-transform-typescript-enums
+[![Tests](https://github.com/dorilahav/babel-plugin-transform-typescript-enums/actions/workflows/run-tests.yml/badge.svg)](https://github.com/dorilahav/babel-plugin-transform-typescript-enums/actions/workflows/run-tests.yml)
 
 TypeScript enums can be very frasturating to deal with.
 This package gives more control over how babel transpiles TypeScript enums.
