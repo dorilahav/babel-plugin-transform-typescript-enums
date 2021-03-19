@@ -4,6 +4,7 @@
   "description": "A babel plugin to transform typescript enums differently.",
   "main": "lib/index.js",
   "scripts": {
+    "test": "jest",
     "build": "babel -d lib src"
   },
   "author": "Dori Lahav Waisberg",
