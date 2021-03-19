@@ -2,14 +2,25 @@
   "name": "babel-plugin-transform-typescript-enums",
   "version": "0.1.0",
   "description": "A babel plugin to transform typescript enums differently.",
+  "author": "Dori Lahav Waisberg",
+  "homepage": "https://github.com/dorilahav/babel-plugin-transform-typescript-enums",
+  "bugs": "https://github.com/dorilahav/babel-plugin-transform-typescript-enums/issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dorilahav/babel-plugin-transform-typescript-enums.git"
+  },
+  "keywords": [
+    "typescript",
+    "enums",
+    "babel"
+  ],
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
     "build": "babel -d lib src",
     "prepublishOnly": "yarn test && yarn build"
   },
-  "author": "Dori Lahav Waisberg",
-  "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.13.10",
     "@babel/core": "^7.13.10",
