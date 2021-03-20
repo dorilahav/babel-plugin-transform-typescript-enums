@@ -1,7 +1,7 @@
 import {transformSync} from '@babel/core';
 import fs from 'fs';
 import path from 'path';
-import plugin from '../src';
+import plugin from '../lib';
 
 const inputFileName = 'input.ts';
 const outputFileName = 'output.js';
