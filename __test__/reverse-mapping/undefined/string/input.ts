@@ -1,4 +1,4 @@
 enum Color {
-  Yellow = 'yellow',
-  Red = 'red'
+  Red = 'red',
+  Yellow = 'yellow'
 }

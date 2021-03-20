@@ -58,7 +58,7 @@ const getTestOutput = directory => {
 
 const transform = (input, options) => transformSync(input, {plugins: [[plugin, options]]})?.code;
 
-const trim = string => string.replace(/\s/g, "");
+const trim = string => string.replace(/[^\S ]/g, "");
 
 const testInputOutputCase = directory => {
   const options = getTestOptions(directory);
@@ -73,7 +73,7 @@ const testInputOutputCase = directory => {
 
 export const testInputOutputCases = baseDirectory => {
   const testDirectories = getTestDirectories(baseDirectory);
-  
+
   for (const testDirectory of testDirectories) {
     testInputOutputCase(testDirectory);
   }
