@@ -1,6 +1,6 @@
 var Color;
 
 (function (Color) {
-  Color["Yellow"] = 1;
-  Color["Red"] = 2;
+  Color["Red"] = 1;
+  Color["Yellow"] = 2;
 })(Color || (Color = {}));
