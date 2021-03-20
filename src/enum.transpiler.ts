@@ -1,19 +1,36 @@
 import assert from "assert";
-import { template } from "@babel/core";
+import {template, NodePath, types} from "@babel/core";
+import {TSEnumDeclaration} from '@babel/types';
 
-export default function transpileEnum(path, t, options) {
-  const { node } = path;
+interface Options {
+  reverseMap?: boolean;
+}
+
+export default (path: NodePath<TSEnumDeclaration>, options: Options) => {
+  const {node} = path;
+
   if (node.const) {
-    throw path.buildCodeFrameError("'const' enums are not supported.");
+    transpileConstEnums(path);
+
+    return;
   }
 
   if (node.declare) {
     path.remove();
+
     return;
   }
 
-  const name = node.id.name;
-  const fill = enumFill(path, t, node.id, options);
+  transpileEnum(path, options);
+}
+
+const transpileConstEnums = (path: NodePath<TSEnumDeclaration>) => {
+  throw path.buildCodeFrameError("'const' enums are not supported.");
+}
+
+const transpileEnum = (path: NodePath<TSEnumDeclaration>, options: Options) => {
+  const {node} = path;
+  const fill = enumFill(path, types, node.id, options);
 
   switch (path.parent.type) {
     case "BlockStatement":
@@ -23,9 +40,9 @@ export default function transpileEnum(path, t, options) {
       if (seen(path.parentPath)) {
         path.remove();
       } else {
-        const isGlobal = t.isProgram(path.parent); // && !path.parent.body.some(t.isModuleDeclaration);
+        const isGlobal = types.isProgram(path.parent); // && !path.parent.body.some(t.isModuleDeclaration);
         path.scope.registerDeclaration(
-          path.replaceWith(makeVar(node.id, t, isGlobal ? "var" : "let"))[0],
+          path.replaceWith(makeVar(node.id, types, isGlobal ? "var" : "let"))[0],
         );
       }
       break;
@@ -40,10 +57,10 @@ export default function transpileEnum(path, t, options) {
       return seen(parentPath.parentPath);
     }
 
-    if (parentPath.getData(name)) {
+    if (parentPath.getData(node.id.name)) {
       return true;
     } else {
-      parentPath.setData(name, true);
+      parentPath.setData(node.id.name, true);
       return false;
     }
   }
@@ -74,7 +91,7 @@ const buildEnumMember = (options, isString) =>
  * Generates the statement that fills in the variable declared by the enum.
  * `(function (E) { ... assignments ... })(E || (E = {}));`
  */
-function enumFill(path, t, id, {reverseMap}) {
+function enumFill(path, t, id, {reverseMap}: Options) {
   const x = translateEnumValues(path, t);
   const assignments = x.map(([memberName, memberValue]) => {
     const buildMemberFunction = reverseMap === undefined ?

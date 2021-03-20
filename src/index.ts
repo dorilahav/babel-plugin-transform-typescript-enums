@@ -11,14 +11,14 @@ export default declare((api, options) => {
     api.assertVersion(7);
 
     options = {...defaultOptions, ...options};
-    
+
     return {
       name: 'transform-typescript-enums',
       inherits: syntaxTypeScript,
 
       visitor: {
         TSEnumDeclaration(path) {
-          transpileEnum(path, api.types, options);
+          transpileEnum(path, options);
         },
       }
     }
