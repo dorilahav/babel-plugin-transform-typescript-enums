@@ -6,20 +6,46 @@ name: Publish
 on:
   release:
     types: [created]
+  push:
+    branches: [dev]
 
 jobs:
+#  setup-node-modules:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-node@v1
+#        with:
+#          node-version: 12
+#      - name: Cache node modules
+#        uses: actions/cache@v1
+#        with:
+#          path: node_modules
+#          key: node_modules
+#      - run: npm i -g yarn
+#      - run: yarn install --no-lockfile
+
   build:
+    needs: setup-node-modules
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 12
+#      - name: Load node modules
+#        uses: actions/cache@v1
+#        with:
+#          path: node_modules
+#          key: node_modules
       - run: npm i -g yarn
       - run: yarn install --no-lockfile
-      - run: yarn test
-
-  publish-npm:
+      - run: yarn build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Library
+          path: lib
+  test:
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -27,8 +53,39 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-          registry-url: https://registry.npmjs.org/
-      - run: npm i
-      - run: npm publish
+#      - name: Load node modules
+#        uses: actions/cache@v1
+#        with:
+#          path: node_modules
+#          key: node_modules
+      - run: npm i -g yarn
+      - run: yarn install --no-lockfile
+      - uses: actions/download-artifact@v2
+        with:
+          name: Library
+          path: lib
+      - run: yarn test
+
+  publish-npm:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12
+#      - name: Load node modules
+#        uses: actions/cache@v1
+#        with:
+#          path: node_modules
+#          key: node_modules
+      - run: npm i -g yarn
+      - run: yarn install --no-lockfile
+      - uses: actions/download-artifact@v2
+        with:
+          name: Library
+          path: lib
+      - name: Publish Package
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_ACCESS_TOKEN}}
