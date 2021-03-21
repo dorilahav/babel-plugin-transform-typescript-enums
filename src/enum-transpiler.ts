@@ -3,28 +3,29 @@ import {TSEnumDeclaration} from '@babel/types';
 import assert from 'assert';
 import {Options} from './types';
 
+const VALID_ENUM_PARENT_TYPES = ['BlockStatement', 'ExportNamedDeclaration', 'Program'];
+
+const ensureValidEnumParentType = (enumPath: NodePath<TSEnumDeclaration>) => {
+  if (!VALID_ENUM_PARENT_TYPES.includes(enumPath.parent.type)) {
+    throw new Error(`Unexpected enum parent '${enumPath.parent.type}`);
+  }
+}
+
 export const transpileEnum = (path: NodePath<TSEnumDeclaration>, options: Options) => {
   const {node} = path;
   const fill = enumFill(path, types, node.id, options);
 
-  switch (path.parent.type) {
-    case "BlockStatement":
-    case "ExportNamedDeclaration":
-    case "Program": {
-      path.insertAfter(fill);
-      if (seen(path.parentPath)) {
-        path.remove();
-      } else {
-        const isGlobal = types.isProgram(path.parent); // && !path.parent.body.some(t.isModuleDeclaration);
-        path.scope.registerDeclaration(
-          path.replaceWith(makeVar(node.id, types, isGlobal ? "var" : "let"))[0],
-        );
-      }
-      break;
-    }
+  ensureValidEnumParentType(path);
 
-    default:
-      throw new Error(`Unexpected enum parent '${path.parent.type}`);
+  path.insertAfter(fill);
+
+  if (seen(path.parentPath)) {
+    path.remove();
+  } else {
+    const isGlobal = types.isProgram(path.parent); // && !path.parent.body.some(t.isModuleDeclaration);
+    path.scope.registerDeclaration(
+      path.replaceWith(makeVar(node.id, types, isGlobal ? "var" : "let"))[0],
+    );
   }
 
   function seen(parentPath) {
