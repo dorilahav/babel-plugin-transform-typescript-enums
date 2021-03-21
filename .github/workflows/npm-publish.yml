@@ -6,38 +6,15 @@ name: Publish
 on:
   release:
     types: [created]
-  push:
-    branches: [dev]
 
 jobs:
-#  setup-node-modules:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-node@v1
-#        with:
-#          node-version: 12
-#      - name: Cache node modules
-#        uses: actions/cache@v1
-#        with:
-#          path: node_modules
-#          key: node_modules
-#      - run: npm i -g yarn
-#      - run: yarn install --no-lockfile
-
   build:
-    needs: setup-node-modules
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-#      - name: Load node modules
-#        uses: actions/cache@v1
-#        with:
-#          path: node_modules
-#          key: node_modules
       - run: npm i -g yarn
       - run: yarn install --no-lockfile
       - run: yarn build
@@ -53,11 +30,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-#      - name: Load node modules
-#        uses: actions/cache@v1
-#        with:
-#          path: node_modules
-#          key: node_modules
       - run: npm i -g yarn
       - run: yarn install --no-lockfile
       - uses: actions/download-artifact@v2
@@ -74,11 +46,6 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-#      - name: Load node modules
-#        uses: actions/cache@v1
-#        with:
-#          path: node_modules
-#          key: node_modules
       - run: npm i -g yarn
       - run: yarn install --no-lockfile
       - uses: actions/download-artifact@v2
