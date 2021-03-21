@@ -1,7 +1,7 @@
 import {declare} from '@babel/helper-plugin-utils';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
 
-import transpileEnum from './enum.transpiler';
+import transpileEnum from './enum-declaration-visitor';
 
 const defaultOptions = {
   reverseMap: undefined

@@ -1,34 +1,9 @@
-import assert from "assert";
-import {template, NodePath, types} from "@babel/core";
+import {NodePath, template, types} from '@babel/core';
 import {TSEnumDeclaration} from '@babel/types';
+import assert from 'assert';
+import {Options} from './types';
 
-interface Options {
-  reverseMap?: boolean;
-}
-
-export default (path: NodePath<TSEnumDeclaration>, options: Options) => {
-  const {node} = path;
-
-  if (node.const) {
-    transpileConstEnums(path);
-
-    return;
-  }
-
-  if (node.declare) {
-    path.remove();
-
-    return;
-  }
-
-  transpileEnum(path, options);
-}
-
-const transpileConstEnums = (path: NodePath<TSEnumDeclaration>) => {
-  throw path.buildCodeFrameError("'const' enums are not supported.");
-}
-
-const transpileEnum = (path: NodePath<TSEnumDeclaration>, options: Options) => {
+export const transpileEnum = (path: NodePath<TSEnumDeclaration>, options: Options) => {
   const {node} = path;
   const fill = enumFill(path, types, node.id, options);
 
@@ -181,9 +156,9 @@ function evaluate(
   }
 
   function evalUnaryExpression({
-    argument,
-    operator,
-  }) {
+                                 argument,
+                                 operator,
+                               }) {
     const value = evalConstant(argument);
     if (value === undefined) {
       return undefined;
